@@ -2,12 +2,15 @@ package app
 
 import (
 	"fmt"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
 	"github.com/canter-tech/car-service/config"
+	"github.com/canter-tech/car-service/internal/repository/inmem"
+	"github.com/canter-tech/car-service/internal/services"
 	v1 "github.com/canter-tech/car-service/internal/transport/http/v1"
 	"github.com/canter-tech/car-service/pkg/httpserver"
 	"github.com/go-chi/chi/v5"
@@ -18,12 +21,20 @@ import (
 func Run(cfg *config.Config) {
 	logger := zerolog.New(os.Stdout)
 
+	repo := inmem.NewCarStore()
+	service := services.NewCarService(repo)
+
 	handler := chi.NewRouter()
 	handler.Use(middleware.Logger)
 	handler.Use(middleware.RedirectSlashes)
 	handler.Use(middleware.Recoverer)
 	handler.Use(middleware.Timeout(5 * time.Second))
-	v1.NewRouter(handler)
+	v1.NewRouter(handler, service)
+
+	chi.Walk(handler, func(method string, route string, handler http.Handler, middlewares ...func(http.Handler) http.Handler) error {
+		fmt.Printf("[%s]: '%s' has %d middlewares\n", method, route, len(middlewares))
+		return nil
+	})
 
 	httpServer := httpserver.New(handler)
 	httpServer.Start()

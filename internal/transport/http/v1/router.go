@@ -1,9 +1,11 @@
 package v1
 
-import "github.com/go-chi/chi/v5"
+import (
+	"github.com/go-chi/chi/v5"
+)
 
-func NewRouter(handler chi.Router) {
+func NewRouter(handler chi.Router, carService CarService) {
 	handler.Route("/api/v1", func(r chi.Router) {
-		r.Mount("/car", newCarRoutes())
+		r.Mount("/car", newCarRoutes(carService))
 	})
 }
