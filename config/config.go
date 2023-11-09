@@ -16,16 +16,13 @@ type HttpConfig struct {
 }
 
 var (
-	ErrLoadingConfig = errors.New("Error loading .env file")
-	ErrReadConfig    = errors.New("Error read config")
+	ErrReadConfig = errors.New("Error read config")
 )
 
 func NewConfig() (*Config, error) {
 	var cfg Config
 
-	if err := godotenv.Load(); err != nil {
-		return nil, ErrLoadingConfig
-	}
+	_ = godotenv.Load()
 
 	err := cleanenv.ReadEnv(&cfg)
 	if err != nil {
