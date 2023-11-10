@@ -132,12 +132,9 @@ func (routes *carRoutes) upload(w http.ResponseWriter, r *http.Request) {
 }
 
 type carJson struct {
-	ID           string       `json:"id"`
-	Name         string       `json:"name"`
-	CyrillicName string       `json:"cyrillic-name"`
-	Popular      bool         `json:"popular"`
-	Country      string       `json:"country"`
-	Models       []models.Car `json:"models"`
+	ID     string       `json:"id"`
+	Name   string       `json:"name"`
+	Models []models.Car `json:"models"`
 }
 
 func readCars(ctx context.Context, r io.Reader, carChan chan models.Car) error {
@@ -150,7 +147,7 @@ func readCars(ctx context.Context, r io.Reader, carChan chan models.Car) error {
 	}
 
 	if t != json.Delim('[') {
-		return fmt.Errorf("expected [, got %v", err)
+		return fmt.Errorf("expected [, got %v", t)
 	}
 
 	for decoder.More() {
