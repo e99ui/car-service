@@ -7,3 +7,27 @@ services:
       dockerfile: Dockerfile
     ports:
       - 8080:8080
+      - 8081:8081
+    environment:
+      "HTTP_ADDR": ":8080"
+      "METRICS_ADDR": ":8081"
+    networks:
+      - back
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./deploymets/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - 19090:9090
+    networks:
+      - back
+  grafana:
+    image: grafana/grafana-oss:latest
+    ports:
+      - 13000:3000
+    networks:
+      - back
+
+
+networks:
+  back:

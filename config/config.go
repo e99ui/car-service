@@ -8,11 +8,16 @@ import (
 )
 
 type Config struct {
-	HttpConfig HttpConfig
+	HttpConfig    HttpConfig
+	MetricsConfig MetricsConfig
 }
 
 type HttpConfig struct {
 	Address string `env:"HTTP_ADDR"`
+}
+
+type MetricsConfig struct {
+	Address string `env:"METRICS_ADDR"`
 }
 
 var (
